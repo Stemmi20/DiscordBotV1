@@ -1,11 +1,11 @@
-import { Collection, Events, MessageFlags, Sticker } from "discord.js";
+import { ButtonInteraction, Collection, Events, IntentsBitField, MessageFlags, Sticker } from "discord.js";
 
 import fs from "node:fs";
 import path from "node:path";
 import { Client } from "discord.js";
 import { token } from "./config.json";
 
-const client = new Client({ intents: [] });
+const client = new Client({ intents: [IntentsBitField.Flags.Guilds, IntentsBitField.Flags.GuildMembers] });
 
 client.login(token);
 
@@ -30,9 +30,11 @@ for (const file of commandFolders) {
 }
 
 client.on(Events.InteractionCreate, async (interaction) => {
+  if (interaction.isButton()) rolehandler(interaction);
   if (!interaction.isChatInputCommand()) return;
 
   const command = commands.get(interaction.commandName);
+
 
   if (!command) {
     console.error(`No command matching ${interaction.commandName} was found.`);
@@ -56,3 +58,32 @@ client.on(Events.InteractionCreate, async (interaction) => {
     }
   }
 });
+
+async function rolehandler(interaction: ButtonInteraction) {
+  if (!interaction.guild) {
+    console.error("Guild not found");
+    return;
+  }
+  const roleId = interaction.customId;
+  const guild = interaction.guild;
+  const member = guild.members.cache.get(interaction.user.id);
+  const role = guild.roles.cache.get(roleId);
+
+  if (member && role) {
+    if (member.roles.cache.has(roleId)) {
+      await member.roles.remove(role);
+      await interaction.reply({
+        content: `Removed ${role.name} from ${interaction.user.username}`,
+        ephemeral: true,
+      });
+    } else {
+      await member.roles.add(role);
+      await interaction.reply({
+        content: `Added ${role.name} to ${interaction.user.username}`,
+        ephemeral: true,
+      });
+    }
+  } else {
+    console.error("Member or Role not found");
+  }
+}
