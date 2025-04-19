@@ -1,17 +1,28 @@
-import { ButtonInteraction, Collection, Events, IntentsBitField, MessageFlags, Sticker } from "discord.js";
+import {
+  ButtonInteraction,
+  Collection,
+  Events,
+  IntentsBitField,
+  Message,
+  MessageFlags,
+  Sticker,
+} from "discord.js";
 
 import fs from "node:fs";
 import path from "node:path";
 import { Client } from "discord.js";
 import { token } from "./config.json";
+import leveling from "./Events/leveling";
 
-const client = new Client({ intents: [IntentsBitField.Flags.Guilds, IntentsBitField.Flags.GuildMembers] });
+const client = new Client({
+  intents: [IntentsBitField.Flags.Guilds, IntentsBitField.Flags.GuildMembers, IntentsBitField.Flags.GuildMessages]
+});
 
 client.login(token);
 
 console.log("Discord Bot is running...");
 
-const commands = new Collection<string, {execute: (...args: any) => void}>();
+const commands = new Collection<string, { execute: (...args: any) => void }>();
 
 const foldersPath = path.join(__dirname, "commands");
 const commandFolders = fs.readdirSync(foldersPath);
@@ -34,7 +45,6 @@ client.on(Events.InteractionCreate, async (interaction) => {
   if (!interaction.isChatInputCommand()) return;
 
   const command = commands.get(interaction.commandName);
-
 
   if (!command) {
     console.error(`No command matching ${interaction.commandName} was found.`);
@@ -87,3 +97,8 @@ async function rolehandler(interaction: ButtonInteraction) {
     console.error("Member or Role not found");
   }
 }
+
+client.on("messageCreate", (message: Message) => {
+  if (!message.guild) return;
+  leveling(message as Message<true>);
+});
