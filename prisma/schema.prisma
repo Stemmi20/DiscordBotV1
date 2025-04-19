@@ -1,0 +1,18 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model level {
+  userid     String    @db.VarChar
+  guildid    String    @default("1") @db.VarChar
+  xp         Decimal   @default(0) @db.Decimal
+  level      Decimal   @default(0) @db.Decimal
+
+  @@id([userid, guildid])
+  @@index([guildid])
+}
