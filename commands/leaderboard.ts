@@ -12,6 +12,7 @@ module.exports = {
             take: 25,
             orderBy: { xp: "desc" }
         })
+        await interaction.guild?.members.fetch();
         const embed = new EmbedBuilder();
         top25.forEach((user, index) => {
             embed.addFields({
