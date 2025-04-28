@@ -12,7 +12,8 @@ import fs from "node:fs";
 import path from "node:path";
 import { Client } from "discord.js";
 import { token } from "./config.json";
-import leveling from "./Events/leveling";
+import levelingserver from "./Events/leveling-server";
+import levelingglobal from "./Events/leveling-global";
 
 const client = new Client({
   intents: [IntentsBitField.Flags.Guilds, IntentsBitField.Flags.GuildMembers, IntentsBitField.Flags.GuildMessages]
@@ -100,5 +101,6 @@ async function rolehandler(interaction: ButtonInteraction) {
 
 client.on("messageCreate", (message: Message) => {
   if (!message.guild) return;
-  leveling(message as Message<true>);
+  levelingserver(message as Message<true>);
+  levelingglobal(message as Message<true>);
 });

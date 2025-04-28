@@ -134,7 +134,7 @@ export const levelUp = async (
   if ("message" in member) return;
 
   await doEmbed(msg, levelData, member.user);
-  await doRoles;
+  await doRoles(msg, levelData, member.user);
 };
 
 const doEmbed = async (
