@@ -9,7 +9,7 @@ import { ChatInputCommandInteraction } from "discord.js";
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName("execute")
+    .setName("execute-self-roles")
     .setDescription("Execute a Command!"),
 
   async execute(interaction: ChatInputCommandInteraction) {
