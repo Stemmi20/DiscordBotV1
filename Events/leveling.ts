@@ -78,7 +78,6 @@ const updateLevels = async (
     (5 / 6) *
     (oldLevel + 1) *
     (2 * (oldLevel + 1) * (oldLevel + 1) + 27 * (oldLevel + 1) + 91);
-
   let newLevel = oldLevel;
 
   if (xp >= neededXP) {
@@ -101,7 +100,7 @@ const updateLevels = async (
   DataBase.level
     .update({
       where: {
-        userid_guildid: { userid: msg.author.id, guildid: "1" },
+        userid_guildid: { userid: msg.author.id, guildid: msg.guildId },
       },
       data: {
         level: newLevel,
