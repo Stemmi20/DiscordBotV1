@@ -112,10 +112,7 @@ const updateLevels = async (
     .then();
 };
 
-const insertLevels = (
-  msg: Discord.Message<true>,
-  baseXP: number,
-) => {
+const insertLevels = (msg: Discord.Message<true>, baseXP: number) => {
   const xp = Math.floor(getRandom(baseXP, baseXP + 10));
 
   DataBase.level
@@ -138,6 +135,7 @@ export const levelUp = async (
   if ("message" in member) return;
 
   await doEmbed(msg, levelData, member.user);
+  await doRoles;
 };
 
 const doEmbed = async (
@@ -147,5 +145,43 @@ const doEmbed = async (
 ) => {
   msg.reply({
     content: `You Leveled Up to Level: ${levelData.newLevel}!`,
+  });
+};
+
+const roles:[number, string][] = [
+  [5, "1366307209910292552"],
+  [10, "1366307308581158964"],
+  [15, "1366307351073783848"],
+  [20, "1366310223517581313"],
+  [30, "1366310260062556250"],
+  [40, "1366310296129376316"],
+  [50, "1366310326303461446"],
+  [60, "1366310359727734815"],
+  [70, "1366310416455827546"],
+  [80, "1366310456515498014"],
+  [90, "1366310495048568935"],
+  [100, "1366310530687438908"],
+];
+
+const doRoles = async (
+  msg: Discord.Message<true>,
+  levelData: LevelData,
+  user: Discord.User
+) => {
+  const role = roles.find((r) => r[0] === levelData.newLevel);
+  if (!role) return;
+  const guild = msg.guild;
+  if (!guild) return;
+  const member = guild.members.cache.get(user.id);
+  if (!member) return;
+  const roleId = role[1];
+  const roleData = guild.roles.cache.get(roleId);
+  if (!roleData) return;
+  if (member.roles.cache.has(roleId)) return;
+  await member.roles.add(roleId).catch((err) => {
+    console.error("Error adding role:", err);
+  });
+  msg.reply({
+    content: `You know own the Role: ${roleData.name}!`,
   });
 };
