@@ -133,15 +133,15 @@ export const levelUp = async (
 ) => {
   if ("message" in member) return;
 
-  await doEmbed(msg, levelData, member.user);
+  // await doEmbed(msg, levelData, member.user);
 };
 
-const doEmbed = async (
-  msg: Discord.Message<true>,
-  levelData: LevelData,
-  user: Discord.User
-) => {
-  msg.reply({
-    content: `You Leveled Up to Level: ${levelData.newLevel}!`,
-  });
-};
+// const doEmbed = async (
+//   msg: Discord.Message<true>,
+//   levelData: LevelData,
+//   user: Discord.User
+// ) => {
+//   msg.reply({
+//     content: `You Leveled Up to Level: ${levelData.newLevel}!`,
+//   });
+// };
